@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+dist/
+# Test material: videos, subtitles and analysis caches
+*.mkv
+*.mp4
+*.srt
+*.voices.json

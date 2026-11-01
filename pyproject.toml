@@ -1,0 +1,43 @@
+[project]
+name = "subtitle-voices"
+version = "0.1.0"
+description = "Translate English subtitles to Czech with the gender of who speaks and who is addressed, detected from the audio."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "deepl>=1.32",
+    "numpy>=2.3",
+    "pyannote-audio>=4.0.7",
+    "torch>=2.15",
+    "transformers>=5.22",
+]
+
+[project.scripts]
+subtitle-voices = "subtitle_voices.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4",
+    "ruff>=0.14",
+    "ty>=0.0.95",
+]
+
+[build-system]
+requires = ["uv_build>=0.12,<0.13"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 110
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "PTH", "N", "C4", "RET"]
+
+[tool.ty.environment]
+python-version = "3.14"
+
+[tool.ty.src]
+include = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
