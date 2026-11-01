@@ -115,10 +115,15 @@ uv run voice-aware-translate "Show - S01E01.mkv" --plain --output plain.cs.srt
 
 ## Development
 
-Run the tests and the checks:
+[prek](https://github.com/j178/prek) runs all checks: ruff, ty, pytest and a scan for secrets. Install
+the Git hook one time. Then the checks run before each commit:
 
 ```bash
-uv run pytest
-uv run ruff check
-uv run ty check
+prek install
+```
+
+Run the checks on all files:
+
+```bash
+prek run --all-files
 ```
