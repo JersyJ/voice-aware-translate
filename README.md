@@ -1,91 +1,115 @@
 # voice-aware-translate
 
-Translates English subtitles to Czech so that the grammar fits **who speaks and to whom**.
+This tool translates English subtitles to Czech. The Czech grammar agrees with the person who speaks
+and with the person who hears the line.
 
-Czech marks gender where English doesn't:
+In Czech, the gender of the speaker changes the words. In English, the words do not change:
 
 | English | said by a man | said by a woman |
 |---|---|---|
 | I was tired. | Byl jsem unavený. | Byla jsem unavená. |
 | Did you see it? (to a man / to a woman) | Viděl jsi to? | Viděla jsi to? |
 
-A text-only translator has to guess, mostly the masculine form. `voice-aware-translate` listens to the
-episode instead: it finds the speakers in the audio, decides each speaker's voice (woman, man or
-child) and gives DeepL that as context for every line.
+A translator that reads only the text must guess the gender. Usually, that translator uses the
+masculine form. This tool does an analysis of the audio. The tool finds the speakers and identifies
+the voice of each speaker: woman, man or child. Then DeepL gets this data as context for each line.
 
-## How it works
+## Operation
 
-1. **Audio**: ffmpeg decodes the episode's audio track (mono, 16 kHz).
+1. **Audio**: ffmpeg decodes the audio track of the episode (mono, 16 kHz).
 2. **Speakers**: [pyannote community-1](https://huggingface.co/pyannote/speaker-diarization-community-1)
-   splits the audio into turns of "speaker A", "speaker B", ... (no limit on their number).
-3. **Voices**: [audEERING's wav2vec2 age-gender model](https://huggingface.co/audeering/wav2vec2-large-robust-24-ft-age-gender)
-   gives female / male / child probabilities. They are averaged over each speaker's longest turns,
-   so one shout or a line over loud music doesn't flip a speaker.
-4. **Lines**: each subtitle line goes to the speaker who talks most during it. Cues with two people
-   ("- Thanks. / - Oh, shit.") are split into their parts. The addressee is the other speaker of the
-   same conversation (the nearest one before, else after, without a long pause).
-5. **Translation**: DeepL translates each part with a context like *"The line is said by a woman to
-   a man"* plus the neighboring lines with their speakers. DeepL doesn't translate or bill the
-   context. Dashes, italics and line breaks are kept.
+   divides the audio into turns of "speaker A", "speaker B" and more. The number of speakers has no
+   limit.
+3. **Voices**: The [audEERING wav2vec2 age-gender model](https://huggingface.co/audeering/wav2vec2-large-robust-24-ft-age-gender)
+   gives the probabilities for female, male and child. The tool calculates the average over the
+   longest turns of each speaker. Thus, one shout or one line with loud music does not change the
+   voice of a speaker.
+4. **Lines**: The tool gives each subtitle line to the speaker who speaks most during that line. If a
+   cue has two persons ("- Thanks. / - Oh, shit."), the tool divides the cue into two parts. The
+   addressee is the other speaker in the same conversation. The tool looks for the nearest speaker
+   before the line, then after the line. A long pause stops the conversation.
+5. **Translation**: DeepL translates each part with a context, for example *"The lines are said by a
+   woman to a man"*. The context also contains the adjacent lines and their speakers. DeepL does not
+   translate the context and does not count the context for payment. The tool keeps the dashes, the
+   italic text and the line breaks.
 
-The analysis is cached next to the video (`VIDEO.voices.json`), so translating again doesn't
-analyze again.
+The tool keeps the analysis in a file next to the video (`VIDEO.voices.json`). If you translate the
+episode again, the tool uses this file and does not do the analysis again.
 
-## Setup
+## Installation
 
-Needs ffmpeg and [uv](https://docs.astral.sh/uv/). An NVIDIA GPU makes the analysis take minutes
-instead of about the length of the episode.
+Make sure that ffmpeg and [uv](https://docs.astral.sh/uv/) are on the computer. With an NVIDIA GPU,
+the analysis takes some minutes. Without a GPU, the analysis takes approximately the length of the
+episode.
+
+Install the dependencies:
 
 ```bash
 uv sync
 ```
 
-The speaker model is free but gated: create a [Hugging Face](https://huggingface.co) account,
-accept the conditions on the [model page](https://huggingface.co/pyannote/speaker-diarization-community-1),
-create a read token (Settings → Access Tokens) and log in once:
+The speaker model is free, but the model has restricted access. Do these steps one time:
+
+1. Create a [Hugging Face](https://huggingface.co) account.
+2. On the [model page](https://huggingface.co/pyannote/speaker-diarization-community-1), accept the
+   conditions.
+3. Create a token with read access (Settings → Access Tokens).
+4. Log in with the token:
+
+   ```bash
+   uvx hf auth login
+   ```
+
+The tool downloads the models (approximately 1.5 GB) when you use the tool for the first time. The
+audio stays on your computer. The tool disables the anonymous usage statistics of pyannote
+(`PYANNOTE_METRICS_ENABLED=0`).
+
+The tool reads the DeepL key from `DEEPL_API_KEY`. If you do not set this variable, the tool asks for
+the key.
+
+## Use
 
 ```bash
-uvx hf auth login
-```
-
-The models (about 1.5 GB) are downloaded on first use. The audio stays on your computer; pyannote's
-anonymous usage statistics are turned off (`PYANNOTE_METRICS_ENABLED=0`).
-
-The DeepL key is read from `DEEPL_API_KEY`, or asked for.
-
-## Usage
-
-```bash
-# VIDEO.en.srt → VIDEO.cs.srt
+# Translate VIDEO.en.srt to VIDEO.cs.srt
 uv run voice-aware-translate "Show - S01E01.mkv"
 
-# See the speakers and the voice of every line, without translating
+# Show the speakers and the voice of each line. Do not translate.
 uv run voice-aware-translate "Show - S01E01.mkv" --analyze-only
 
-# For comparison: the same translation without the audio analysis
+# Translate without the audio analysis, for a comparison
 uv run voice-aware-translate "Show - S01E01.mkv" --plain --output plain.cs.srt
 ```
 
-Options: `--subtitles`, `--output`, `--force`, `--audio-track N` (a release with several
-languages), `--device cuda|cpu`, `--context N` (neighboring lines for DeepL), `--reanalyze`.
+| Option | Function |
+|---|---|
+| `--subtitles FILE` | English subtitle file (default: `VIDEO.en.srt`) |
+| `--output FILE` | Czech subtitle file (default: `VIDEO.cs.srt`) |
+| `--force` | Overwrite the output file |
+| `--audio-track N` | Use audio track N, for a release with more than one language |
+| `--device cuda\|cpu` | Select the processor for the analysis |
+| `--context N` | Number of adjacent lines that DeepL gets as context (default: 2) |
+| `--reanalyze` | Do the analysis again and ignore the file from the last analysis |
 
 ## Limits
 
-- The voice says a speaker's gender, not the addressee's; that is a guess from the conversation.
-- Music under the dialogue, whispering, shouting, phone voices and two people at once make the
-  speaker detection less certain. Such lines get no gender hint (`?` in `--analyze-only`).
-- A child's voice doesn't tell a boy from a girl.
-- DeepL takes the context as a hint; it doesn't always follow it.
+- The voice identifies the gender of the speaker. The voice does not identify the gender of the
+  addressee. The tool guesses the addressee from the conversation.
+- These conditions decrease the accuracy of the speaker detection:
+  - music below the dialogue
+  - whispers and shouts
+  - telephone voices
+  - two persons who speak at the same time
+
+  Lines with low accuracy get no gender hint (`?` in `--analyze-only`).
+- The voice of a child does not identify a boy or a girl.
+- DeepL uses the context as a hint. DeepL does not always obey the hint.
 
 ## Development
+
+Run the tests and the checks:
 
 ```bash
 uv run pytest
 uv run ruff check
 uv run ty check
 ```
-
-## Licenses
-
-The code is yours to use. The voice model is CC-BY-NC-SA 4.0 (non-commercial only), the speaker
-model CC-BY-4.0.
