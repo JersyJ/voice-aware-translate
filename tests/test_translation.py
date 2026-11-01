@@ -3,11 +3,11 @@ from collections.abc import Sequence
 import deepl
 import pytest
 
-from subtitle_voices import translation
-from subtitle_voices.attribution import Line
-from subtitle_voices.subtitles import Cue
-from subtitle_voices.translation import DeepL, batches, build_context, translate_cues, voice_hint
-from subtitle_voices.voices import Voice
+from voice_aware_translate import translation
+from voice_aware_translate.attribution import Line
+from voice_aware_translate.subtitles import Cue
+from voice_aware_translate.translation import DeepL, batches, build_context, translate_cues, voice_hint
+from voice_aware_translate.voices import Voice
 
 LINES = [
     Line(0, "Where were you?", 0, 2, "A", Voice.FEMALE, Voice.MALE),

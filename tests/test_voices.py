@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from subtitle_voices.diarization import Turn
-from subtitle_voices.voices import Voice, decide, sample_turns, speaker_voices
+from voice_aware_translate.diarization import Turn
+from voice_aware_translate.voices import Voice, decide, sample_turns, speaker_voices
 
 RATE = 100  # samples per second, enough for the logic
 

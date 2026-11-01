@@ -7,7 +7,7 @@ from enum import StrEnum
 
 import numpy as np
 
-from subtitle_voices.diarization import Turn
+from voice_aware_translate.diarization import Turn
 
 
 class Voice(StrEnum):

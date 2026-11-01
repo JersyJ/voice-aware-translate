@@ -5,9 +5,9 @@ from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from subtitle_voices.audio import SAMPLE_RATE, load_audio
-from subtitle_voices.diarization import Turn, diarize
-from subtitle_voices.voices import SpeakerVoice, Voice, speaker_voices
+from voice_aware_translate.audio import SAMPLE_RATE, load_audio
+from voice_aware_translate.diarization import Turn, diarize
+from voice_aware_translate.voices import SpeakerVoice, Voice, speaker_voices
 
 _FORMAT = 1  # version of the cache file
 
@@ -30,7 +30,7 @@ def analyze(
 ) -> Analysis:
     """Find the speakers in the video's audio and decide their voices. Downloads the models on
     first use (about 1.5 GB)."""
-    from subtitle_voices.age_gender import AgeGenderClassifier  # loads torch
+    from voice_aware_translate.age_gender import AgeGenderClassifier  # loads torch
 
     log(f"🎧 Decoding the audio of {video.name}...")
     audio = load_audio(video, audio_track)

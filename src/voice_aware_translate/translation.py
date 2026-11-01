@@ -8,9 +8,9 @@ from dataclasses import replace
 
 import deepl
 
-from subtitle_voices.attribution import Line
-from subtitle_voices.subtitles import Cue, split_dash, wrap_like
-from subtitle_voices.voices import Voice
+from voice_aware_translate.attribution import Line
+from voice_aware_translate.subtitles import Cue, split_dash, wrap_like
+from voice_aware_translate.voices import Voice
 
 # Translates the texts (first argument) with one context (second, not translated) and returns the
 # translations in the same order. Each text is translated on its own.

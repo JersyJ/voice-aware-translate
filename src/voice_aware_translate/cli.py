@@ -10,21 +10,21 @@ from pathlib import Path
 
 import deepl
 
-from subtitle_voices import analysis as cache
-from subtitle_voices.analysis import Analysis, analyze
-from subtitle_voices.attribution import Line, attribute
-from subtitle_voices.audio import AudioError
-from subtitle_voices.diarization import DiarizationError
-from subtitle_voices.subtitles import format_srt, parse_srt
-from subtitle_voices.translation import DeepL, translate_cues
-from subtitle_voices.voices import Voice
+from voice_aware_translate import analysis as cache
+from voice_aware_translate.analysis import Analysis, analyze
+from voice_aware_translate.attribution import Line, attribute
+from voice_aware_translate.audio import AudioError
+from voice_aware_translate.diarization import DiarizationError
+from voice_aware_translate.subtitles import format_srt, parse_srt
+from voice_aware_translate.translation import DeepL, translate_cues
+from voice_aware_translate.voices import Voice
 
 _SHORT = {Voice.FEMALE: "woman", Voice.MALE: "man", Voice.CHILD: "child", Voice.UNKNOWN: "?"}
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="subtitle-voices",
+        prog="voice-aware-translate",
         description="Translate English subtitles to Czech with the gender of who speaks and who is "
         "addressed, detected from the audio.",
     )

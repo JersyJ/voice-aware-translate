@@ -3,8 +3,8 @@ from pathlib import Path
 
 import pytest
 
-from subtitle_voices import cli
-from subtitle_voices.subtitles import parse_srt
+from voice_aware_translate import cli
+from voice_aware_translate.subtitles import parse_srt
 
 
 class FakeDeepL:

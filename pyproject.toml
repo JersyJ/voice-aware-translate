@@ -1,5 +1,5 @@
 [project]
-name = "subtitle-voices"
+name = "voice-aware-translate"
 version = "0.1.0"
 description = "Translate English subtitles to Czech with the gender of who speaks and who is addressed, detected from the audio."
 readme = "README.md"
@@ -13,7 +13,7 @@ dependencies = [
 ]
 
 [project.scripts]
-subtitle-voices = "subtitle_voices.cli:main"
+voice-aware-translate = "voice_aware_translate.cli:main"
 
 [dependency-groups]
 dev = [

@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from subtitle_voices import analysis
-from subtitle_voices.analysis import Analysis
-from subtitle_voices.diarization import Turn
-from subtitle_voices.voices import SpeakerVoice, Voice
+from voice_aware_translate import analysis
+from voice_aware_translate.analysis import Analysis
+from voice_aware_translate.diarization import Turn
+from voice_aware_translate.voices import SpeakerVoice, Voice
 
 
 def test_cache_round_trips(tmp_path: Path):

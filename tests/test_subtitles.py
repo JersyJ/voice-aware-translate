@@ -1,4 +1,4 @@
-from subtitle_voices.subtitles import Cue, dialogue_parts, format_srt, parse_srt, split_dash, wrap_like
+from voice_aware_translate.subtitles import Cue, dialogue_parts, format_srt, parse_srt, split_dash, wrap_like
 
 SRT = """﻿1
 00:00:01,000 --> 00:00:02,500

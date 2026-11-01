@@ -1,4 +1,4 @@
-# subtitle-voices
+# voice-aware-translate
 
 Translates English subtitles to Czech so that the grammar fits **who speaks and to whom**.
 
@@ -9,7 +9,7 @@ Czech marks gender where English doesn't:
 | I was tired. | Byl jsem unavený. | Byla jsem unavená. |
 | Did you see it? (to a man / to a woman) | Viděl jsi to? | Viděla jsi to? |
 
-A text-only translator has to guess, mostly the masculine form. `subtitle-voices` listens to the
+A text-only translator has to guess, mostly the masculine form. `voice-aware-translate` listens to the
 episode instead: it finds the speakers in the audio, decides each speaker's voice (woman, man or
 child) and gives DeepL that as context for every line.
 
@@ -57,13 +57,13 @@ The DeepL key is read from `DEEPL_API_KEY`, or asked for.
 
 ```bash
 # VIDEO.en.srt → VIDEO.cs.srt
-uv run subtitle-voices "Show - S01E01.mkv"
+uv run voice-aware-translate "Show - S01E01.mkv"
 
 # See the speakers and the voice of every line, without translating
-uv run subtitle-voices "Show - S01E01.mkv" --analyze-only
+uv run voice-aware-translate "Show - S01E01.mkv" --analyze-only
 
 # For comparison: the same translation without the audio analysis
-uv run subtitle-voices "Show - S01E01.mkv" --plain --output plain.cs.srt
+uv run voice-aware-translate "Show - S01E01.mkv" --plain --output plain.cs.srt
 ```
 
 Options: `--subtitles`, `--output`, `--force`, `--audio-track N` (a release with several

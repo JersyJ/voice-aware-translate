@@ -5,9 +5,9 @@ from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass, replace
 
-from subtitle_voices.diarization import Turn
-from subtitle_voices.subtitles import Cue, dialogue_parts
-from subtitle_voices.voices import Voice
+from voice_aware_translate.diarization import Turn
+from voice_aware_translate.subtitles import Cue, dialogue_parts
+from voice_aware_translate.voices import Voice
 
 # A neighboring line counts as the same conversation only if the pause is at most this long (s).
 CONVERSATION_GAP = 5.0

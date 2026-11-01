@@ -1,7 +1,7 @@
-from subtitle_voices.attribution import Line, Timeline, add_addressees, attribute, split_cue
-from subtitle_voices.diarization import Turn
-from subtitle_voices.subtitles import Cue
-from subtitle_voices.voices import Voice
+from voice_aware_translate.attribution import Line, Timeline, add_addressees, attribute, split_cue
+from voice_aware_translate.diarization import Turn
+from voice_aware_translate.subtitles import Cue
+from voice_aware_translate.voices import Voice
 
 VOICES = {"A": Voice.FEMALE, "B": Voice.MALE, "C": Voice.CHILD}
 
