@@ -76,6 +76,42 @@ For the translation, the tool needs a DeepL API key. Do these steps one time:
 
 If you do not set `DEEPL_API_KEY`, the tool asks for the key.
 
+## Docker
+
+The Docker image contains Python, ffmpeg and all dependencies. You need only Docker. For the GPU, also
+install the [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/).
+
+Build the image (approximately 11 GB on the disk, mostly PyTorch with CUDA):
+
+```bash
+docker build -t voice-aware-translate .
+```
+
+Do steps 1 to 3 for Hugging Face and the steps for the DeepL key from the installation. Then set the
+Hugging Face token in the shell:
+
+```bash
+read -rs HF_TOKEN && export HF_TOKEN
+```
+
+Translate an episode in the current directory:
+
+```bash
+mkdir -p ~/.cache/huggingface
+docker run --rm -it --gpus all --user "$(id -u):$(id -g)" \
+  -v ~/.cache/huggingface:/cache -v "$PWD:/data" \
+  -e HF_TOKEN -e DEEPL_API_KEY \
+  voice-aware-translate "Show - S01E01.mkv"
+```
+
+- `-v ~/.cache/huggingface:/cache` keeps the models between runs. If you logged in with
+  `hf auth login`, the container uses that login, and `-e HF_TOKEN` is not necessary.
+- `-e HF_TOKEN -e DEEPL_API_KEY` give the keys from the shell to the container. The values do not
+  go into the command line.
+- `--user` makes the subtitle files yours. The video and the subtitles must be in the current
+  directory.
+- Without a GPU, remove `--gpus all`. Then the analysis takes approximately the length of the episode.
+
 ## Use
 
 ```bash
