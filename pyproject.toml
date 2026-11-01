@@ -3,6 +3,8 @@ name = "voice-aware-translate"
 version = "0.1.0"
 description = "Translate English subtitles to Czech with the gender of who speaks and who is addressed, detected from the audio."
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.14"
 dependencies = [
     "deepl>=1.32",

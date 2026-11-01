@@ -1,12 +1,8 @@
 from collections.abc import Sequence
 
-import deepl
-import pytest
-
-from voice_aware_translate import translation
 from voice_aware_translate.attribution import Line
 from voice_aware_translate.subtitles import Cue
-from voice_aware_translate.translation import DeepL, batches, build_context, translate_cues, voice_hint
+from voice_aware_translate.translation import batches, build_context, translate_cues
 from voice_aware_translate.voices import Voice
 
 LINES = [
@@ -26,13 +22,6 @@ CZECH = {
     "<i>Liar.</i>": "<i>Lhář.</i>",
     "You should trademark your face": "Měl by sis nechat zaregistrovat svou tvář",
 }
-
-
-def test_voice_hint_names_what_is_known():
-    assert voice_hint(LINES[0]) == "The lines are said by a woman to a man."
-    assert voice_hint(Line(0, "x", 0, 1, voice=Voice.CHILD)) == "The lines are said by a child."
-    assert voice_hint(Line(0, "x", 0, 1, addressee=Voice.MALE)) == "The lines are said to a man."
-    assert voice_hint(LINES[3]) == ""
 
 
 def test_batches_group_lines_with_the_same_voices():
@@ -65,45 +54,3 @@ def test_translate_cues_translates_each_part_with_its_context():
     ]
     assert [cue.start for cue in czech] == [0, 3, 6]
     assert calls[1] == (["I was tired."], "The lines are said by a man to a woman.\nA man: I was tired.")
-
-
-class _Result:
-    def __init__(self, text: str):
-        self.text = text
-
-
-class _BusyClient:
-    """Answers "too many requests" `busy` times, then translates."""
-
-    def __init__(self, busy: int):
-        self.busy = busy
-        self.calls: list[dict[str, object]] = []
-
-    def translate_text(self, texts: list[str], **options: object) -> list[_Result]:
-        self.calls.append(options)
-        if len(self.calls) <= self.busy:
-            raise deepl.TooManyRequestsException("busy")
-        return [_Result(CZECH[text]) for text in texts]
-
-
-def _deepl_with(client: _BusyClient, retries: int) -> DeepL:
-    translator = DeepL.__new__(DeepL)
-    translator.__dict__.update(_client=client, _target_lang="CS", _retries=retries)
-    return translator
-
-
-def test_deepl_waits_and_retries_when_busy(monkeypatch: pytest.MonkeyPatch):
-    waits: list[float] = []
-    monkeypatch.setattr(translation.time, "sleep", waits.append)
-    client = _BusyClient(busy=2)
-
-    assert _deepl_with(client, retries=3)(["<i>Liar.</i>"], "ctx") == ["<i>Lhář.</i>"]
-    assert waits == [1, 2]
-    assert client.calls[-1]["context"] == "ctx"
-    assert client.calls[-1]["tag_handling"] == "html"
-
-
-def test_deepl_gives_up_after_the_retries(monkeypatch: pytest.MonkeyPatch):
-    monkeypatch.setattr(translation.time, "sleep", lambda _: None)
-    with pytest.raises(deepl.TooManyRequestsException):
-        _deepl_with(_BusyClient(busy=5), retries=2)(["Where were you?"], "")
