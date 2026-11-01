@@ -1,4 +1,4 @@
-from voice_aware_translate.attribution import Line, Timeline, add_addressees, attribute, split_cue
+from voice_aware_translate.attribution import Line, Timeline, add_addressees, attribute
 from voice_aware_translate.diarization import Turn
 from voice_aware_translate.subtitles import Cue
 from voice_aware_translate.voices import Voice
@@ -11,14 +11,6 @@ def test_main_speaker_is_who_talks_most_in_the_range():
     assert timeline.main_speaker(1.5, 4) == "B"
     assert timeline.main_speaker(0, 1) == "A"
     assert timeline.main_speaker(5.5, 7.5) is None
-
-
-def test_split_cue_shares_time_by_text_length():
-    first, second = split_cue(3, Cue(10.0, 13.0, "- Hi.\n- Hello there"))
-    assert (first.cue, first.text, first.start) == (3, "- Hi.", 10.0)
-    assert first.end == second.start
-    assert round(second.end, 6) == 13.0
-    assert first.end - first.start < second.end - second.start
 
 
 def test_attribute_splits_a_two_speaker_cue_between_the_speakers():

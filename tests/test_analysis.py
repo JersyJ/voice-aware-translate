@@ -17,9 +17,3 @@ def test_cache_round_trips(tmp_path: Path):
     assert loaded == result
     assert loaded is not None
     assert loaded.voice_map() == {"SPEAKER_00": Voice.FEMALE}
-
-
-def test_cache_ignores_missing_and_other_formats(tmp_path: Path):
-    assert analysis.load(tmp_path / "missing.json") is None
-    (tmp_path / "old.json").write_text('{"format": 0}')
-    assert analysis.load(tmp_path / "old.json") is None

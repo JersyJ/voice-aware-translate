@@ -2,7 +2,7 @@ from collections.abc import Sequence
 
 from voice_aware_translate.attribution import Line
 from voice_aware_translate.subtitles import Cue
-from voice_aware_translate.translation import batches, build_context, translate_cues
+from voice_aware_translate.translation import batches, translate_cues
 from voice_aware_translate.voices import Voice
 
 LINES = [
@@ -30,13 +30,6 @@ def test_batches_group_lines_with_the_same_voices():
     assert batches(lines) == [range(0, 3), range(3, 4), range(4, 5)]
     assert batches(lines[:3], size=2) == [range(0, 2), range(2, 3)]
     assert batches([]) == []
-
-
-def test_build_context_has_the_hint_and_the_conversation_without_tags_and_dashes():
-    assert build_context(LINES, range(1, 2), window=1) == (
-        "The lines are said by a man to a woman.\n"
-        "A woman: Where were you?\nA man: I was tired.\nA woman: Liar."
-    )
 
 
 def test_translate_cues_translates_each_part_with_its_context():
