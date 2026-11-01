@@ -1,20 +1,19 @@
 # voice-aware-translate
 
-This tool translates English subtitles to Czech. The Czech grammar agrees with the person who speaks
-and with the person who hears the line.
+Translates English subtitles to Czech so that the grammar fits **who speaks and to whom**.
 
-In Czech, the gender of the speaker changes the words. In English, the words do not change:
+Czech marks gender where English doesn't:
 
 | English | said by a man | said by a woman |
 |---|---|---|
 | I was tired. | Byl jsem unavený. | Byla jsem unavená. |
 | Did you see it? (to a man / to a woman) | Viděl jsi to? | Viděla jsi to? |
 
-A translator that reads only the text must guess the gender. Usually, that translator uses the
-masculine form. This tool does an analysis of the audio. The tool finds the speakers and identifies
-the voice of each speaker: woman, man or child. Then DeepL gets this data as context for each line.
+A text-only translator has to guess, mostly the masculine form. `voice-aware-translate` listens to the
+episode instead: it finds the speakers in the audio, decides each speaker's voice (woman, man or
+child) and gives DeepL that as context for every line.
 
-## Operation
+## How it works
 
 1. **Audio**: ffmpeg decodes the audio track of the episode (mono, 16 kHz).
 2. **Speakers**: [pyannote community-1](https://huggingface.co/pyannote/speaker-diarization-community-1)
