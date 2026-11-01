@@ -63,39 +63,18 @@ The tool downloads the models (approximately 1.5 GB) when you use the tool for t
 audio stays on your computer. The tool disables the anonymous usage statistics of pyannote
 (`PYANNOTE_METRICS_ENABLED=0`).
 
-## DeepL
-
-DeepL is the translation service of the tool. The tool translates from English (EN) to Czech (CS).
-
-The tool sends the subtitle text and the context to DeepL. The audio does not go to DeepL.
-
-### API key
+For the translation, the tool needs a DeepL API key. Do these steps one time:
 
 1. Create an account for the DeepL API on [deepl.com/pro-api](https://www.deepl.com/pro-api).
-   DeepL can ask for a credit card to verify the account.
-2. Copy the authentication key from the account page. A key for the Free plan ends with `:fx`.
-3. Set the key for the current shell. With `read -rs`, the key does not go into the shell history:
+   The Free plan translates 500,000 characters each month, approximately 25 episodes.
+2. Copy the authentication key from the account page.
+3. In each new shell, set the key. With `read -rs`, the key does not go into the shell history:
 
    ```bash
    read -rs DEEPL_API_KEY && export DEEPL_API_KEY
    ```
 
 If you do not set `DEEPL_API_KEY`, the tool asks for the key.
-
-### Quota
-
-- The Free plan translates 500,000 characters each month without payment.
-- DeepL counts only the subtitle text. DeepL does not count the context.
-- An episode of 40 minutes has approximately 19,000 characters. Thus, the Free plan is sufficient for
-  approximately 25 episodes each month.
-- A translation with `--plain` uses the same quantity of characters.
-
-### Too many requests
-
-The tool sends the lines in groups of a maximum of 8 lines. One group has the same speaker and the same
-addressee. If DeepL refuses a request because of too many requests, the tool waits and tries again.
-The wait time increases from 1 second to a maximum of 60 seconds. After 8 failed attempts, the tool
-stops with an error.
 
 ## Use
 
